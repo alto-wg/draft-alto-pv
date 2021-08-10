@@ -124,10 +124,10 @@ Intended Semantics:
   In this format, the entity ID combines:
 
   - a defining information resource for the ANE on which a
-    "persistent-entity-id" is queried, which is the property map defining the
-    ANE as a persistent entity, together with the properties
+    "persistent-entity-id" is queried, which is the Property Map resource
+    defining the ANE as a persistent entity, together with the properties
 
-  - the persistent name of the ANE in this property map
+  - the persistent name of the ANE in that Property Map
 
   With this format, the client has all the needed information for further
   standalone query properties on the persistent ANE.

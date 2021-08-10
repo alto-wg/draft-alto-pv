@@ -36,10 +36,10 @@ the network with poorly scheduled traffic.
 
 Despite the benefits, ISPs are not likely to expose details on their
 network paths: first for the sake of confidentiality, second because it may
-result in an increase in volume and computation overhead, and last because it is
-difficult for ISPs to figure out what information and what details an
-application needs. Likewise, applications do not necessarily need all the
-network path details and are likely not able to understand them.
+increase volume and computation overhead, and last because it is difficult for
+ISPs to figure out what information and what details an application needs.
+Likewise, applications do not necessarily need all the network path details and
+are likely not able to understand them.
 
 Therefore, it is beneficial for both parties if an ALTO server provides ALTO
 clients with an "abstract network state" that provides the necessary details to
@@ -104,7 +104,7 @@ the terms defined in these documents, this document also uses the following
 additional terms:
 
 - Abstract Network Element (ANE): An Abstract Network Element is an abstract
-  representation for a component in a network that handle data packets and whose
+  representation for a component in a network that handles data packets and whose
   properties can potentially have an impact on the end-to-end performance of
   traffic. An ANE can be a physical device such as a router, a link or an
   interface, or an aggregation of devices such as a subnetwork, or a data
@@ -114,9 +114,9 @@ additional terms:
   defined in {{RFC2216}} in the sense that they both provide an abstract
   representation of particular components of a network. However, they have
   different criteria on how these particular components are selected.
-  Specifically, Network Element requires the components to be potentially
-  capable of exercising QoS control, while Abstract Network Element only
-  requires the components to have an impact on the end-to-end performance.
+  Specifically, Network Element requires the components to be capable of
+  exercising QoS control, while Abstract Network Element only requires the
+  components to have an impact on the end-to-end performance.
 
 - ANE Name: An ANE can be constructed either statically in advance or on demand
   based on the requested information. Thus, different ANEs may only be valid
@@ -165,9 +165,9 @@ However, existing cost maps can not reveal such information.
 Specifically, consider a network as shown in {{fig-dumbbell}}. The network has 7
 switches (sw1 to sw7) forming a dumb-bell topology. Switches sw1/sw3 provide
 access on one side, sw2/sw4 provide access on the other side, and sw5-sw7 form
-the backbone. Endhosts eh1 to eh4 are connected to access switches sw1 to sw4
+the backbone. End hosts eh1 to eh4 are connected to access switches sw1 to sw4
 respectively. Assume that the bandwidth of link eh1 -> sw1 and link sw1 -> sw5
-are 150 Mbps, and the bandwidth of the other links are 100 Mbps.
+is 150 Mbps, and the bandwidth of the other links is 100 Mbps.
 
 ~~~~ drawing
                               +-----+
@@ -211,7 +211,7 @@ the available bandwidth between a source and a destination.
 {: #fig-base title="Base Single-Node Topology Abstraction"}
 
 Now assume the application wants to maximize the total rate of the traffic among
-a set of end host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4.
+a set of <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4.
 Let x denote the transmission rate of eh1 -> eh2 and y denote the rate of eh1 ->
 eh4. The objective function is
 
@@ -258,7 +258,7 @@ infeasible, as there are only two potential cases:
   and the real optimal total rate is 100 Mbps.
 
 Clearly, with more accurate and fine-grained information, the application can
-gain a better prediction of its traffic and may orchestrate its own resources
+gain a better prediction of its traffic and may orchestrate its resources
 accordingly. However, to provide such information, the network needs to expose
 more details beyond the simple cost map abstraction. In particular:
 
@@ -290,9 +290,9 @@ AR2:
 
 AR3:
 : An ALTO server must provide essential information on the properties associated
-  to the ANEs.
+  with the ANEs.
 
-The extension defined in this document propose a solution to provide these
+The extension defined in this document proposes a solution to provide these
 details.
 
 ## Use Cases
@@ -329,7 +329,7 @@ transfer.
 ### CDN and Service Edge
 
 A growing trend in today's applications is to bring storage and computation
-closer to the end user for better QoE, such as Content Delivery Network (CDN),
+closer to the end users for better QoE, such as Content Delivery Network (CDN),
 AR/VR, and cloud gaming, as reported in various documents
 ({{I-D.contreras-alto-service-edge}},
 {{I-D.huang-alto-mowie-for-network-aware-app}}, and

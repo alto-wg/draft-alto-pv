@@ -2,8 +2,8 @@
 
 ## Compatibility with Legacy ALTO Clients/Servers
 
-The multipart filtered cost map resource and the multipart endpoint cost
-resource has no backward compatibility issue with legacy ALTO clients and
+The multipart Filtered Cost Map resource and the multipart Endpoint Cost
+Service resource has no backward compatibility issue with legacy ALTO clients and
 servers. Although these two types of resources reuse the media types defined in
 the base ALTO protocol for the accept input parameters, they have different
 media types for responses. If the ALTO server provides these two types of
@@ -11,7 +11,7 @@ resources, but the ALTO client does not support them, the ALTO client will
 ignore the resources without incurring any incompatibility problem.
 
 <!--
-The path vector extension on Filtered Cost Map and Endpoint Cost Service is
+The Path Vector extension on Filtered Cost Map and Endpoint Cost Service is
 backward compatible with the base ALTO protocol:
 
 - If the ALTO server provides extended capabilities `dependent-property-map` and
@@ -30,10 +30,10 @@ backward compatible with the base ALTO protocol:
 The extension defined in this document is NOT compatible with the multi-cost
 extension {{RFC8189}}. The reason is that if a resource supports both the
 extension defined in this document and the multi-cost extension, the media type
-of this resource depends on the selection of cost types: if the path vector cost
+of this resource depends on the selection of cost types: if the Path Vector cost
 type is selected, the media type of the response is either `multipart/related;
 type=application/alto-costmap+json` or `multipart/related;
-type=application/alto-endpointcost+json`; if the path vector cost type is not
+type=application/alto-endpointcost+json`; if the Path Vector cost type is not
 selected, the media type of the response is either
 `application/alto-costmap+json` or `application/alto-endpointcost+json`. Thus,
 there can be multiple media types associated with the information resource,
@@ -42,7 +42,7 @@ which is not compatible with {{RFC7285}} (Section 9.1.2).
 Note that this problem may happen when an ALTO information resource supports
 multiple cost types, even if it does not enable the multi-cost extension. Thus,
 {{pvcm-cap}} has specified that if an ALTO information resource enables the
-extension defined in this document, the path vector cost type MUST be the only
+extension defined in this document, the Path Vector cost type MUST be the only
 cost type in the `cost-type-names` capability of this resource.
 
 <!--
@@ -79,8 +79,8 @@ ALTO clients and servers MUST follow the specifications given in Section 5.2 of
 
 The extension specified in this document is compatible with the Cost Calendar
 extension {{RFC8896}}. When used together with the Cost Calendar extension, the
-cost value between a source and a destination is an array of path vectors, where
-the k-th path vector refers to the abstract network paths traversed in the k-th
+cost value between a source and a destination is an array of Path Vectors, where
+the k-th Path Vector refers to the abstract network paths traversed in the k-th
 time interval by traffic from the source to the destination.
 
 When used with time-varying properties, e.g., maximum reservable bandwidth
@@ -152,18 +152,18 @@ mechanism is beyond the scope of this document.
 ## General Multi-Resource Query ##
 
 Querying multiple ALTO information resources continuously is a general
-requirement. Enabling such a capability, however, must address the general
+requirement. Enabling such a capability, however, must address general
 issues like efficiency and consistency. The incremental update extension
 {{RFC8895}} supports submitting multiple queries in a single request, and allows
 flexible control over the queries. However, it does not cover the case
 introduced in this document where multiple resources are needed for a single
 request.
 
-This extension gives an example of using a multipart message to encode two
-specific ALTO information resources: a filtered cost map or an endpoint cost
-map, and a property map. By packing multiple resources in a single response, the
-implication is that servers may proactively push related information resources to
-clients.
+This extension gives an example of using a multipart message to encode the
+responses from two specific ALTO information resources: a Filtered Cost Map or
+an Endpoint Cost Service, and a Property Map. By packing multiple resources in a
+single response, the implication is that servers may proactively push related
+information resources to clients.
 
 Thus, it is worth looking into the direction of extending the SSE mechanism as
 used in the incremental update extension {{RFC8895}}, or upgrading to HTTP/2
@@ -242,7 +242,7 @@ For availability of ALTO service, an ALTO server should be cognizant that using
 Path Vector extension might have a new risk: frequent requesting for Path
 Vectors might consume intolerable amounts of the server-side computation and
 storage, which can break the ALTO server. For example, if an ALTO server
-implementation dynamically computes the Path Vectors for each requests, the
+implementation dynamically computes the Path Vectors for each request, the
 service providing Path Vectors may become an entry point for denial-of-service
 attacks on the availability of an ALTO server.
 

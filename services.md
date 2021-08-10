@@ -8,27 +8,27 @@ services.
 
 ## Multipart Filtered Cost Map for Path Vector # {#pvcm-spec}
 
-This document introduces a new ALTO resource called multipart filtered cost map
+This document introduces a new ALTO resource called multipart Filtered Cost Map
 resource, which allows an ALTO server to provide other ALTO resources associated
-to the cost map resource in the same response.
+with the Cost Map resource in the same response.
 
 ### Media Type ##
 
-The media type of the multipart filtered cost map resource is
+The media type of the multipart Filtered Cost Map resource is
 `multipart/related;type=application/alto-costmap+json`.
 
 ### HTTP Method ##
 
-The multipart filtered cost map is requested using the HTTP POST method.
+The multipart Filtered Cost Map is requested using the HTTP POST method.
 
 ### Accept Input Parameters ## {#pvcm-accept}
 
-The input parameters of the multipart filtered cost map are supplied in the body
+The input parameters of the multipart Filtered Cost Map are supplied in the body
 of an HTTP POST request. This document extends the input parameters to a
-filtered cost map, which is defined as a JSON object of type
+Filtered Cost Map, which is defined as a JSON object of type
 `ReqFilteredCostMap` in Section 11.3.2.3 of RFC 7285 {{RFC7285}}, with a data
 format indicated by the media type `application/alto-costmapfilter+json`, which
-is a JSON object of type PVReqFilteredCostMap, where:
+is a JSON object of type PVReqFilteredCostMap:
 
 ~~~
 object {
@@ -71,7 +71,7 @@ following request.
 
 ### Capabilities ## {#pvcm-cap}
 
-The multipart filtered cost map resource extends the capabilities defined
+The multipart Filtered Cost Map resource extends the capabilities defined
 in Section 11.3.2.4 of {{RFC7285}}. The capabilities are defined by a JSON
 object of type PVFilteredCostMapCapabilities:
 
@@ -138,7 +138,7 @@ The body of the response MUST consist of two parts:
   The body of the Path Vector part MUST be a JSON object with the same format as
   defined in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the
   `vtag` field in the `meta` field, which provides the version tag of the
-  returned cost map. The resource ID of the version tag MUST follow the format of
+  returned CostMapData. The resource ID of the version tag MUST follow the format of
 
   ~~~
   resource-id '.' part-resource-id
@@ -150,7 +150,7 @@ The body of the response MUST consist of two parts:
   The `meta` field MUST also include the `dependent-vtags` field, whose value is
   a single-element array to indicate the version tag of the network map used,
   where the network map is specified in the `uses` attribute of the multipart
-  filtered cost map resource in IRD.
+  Filtered Cost Map resource in IRD.
 
 - The Unified Property Map part MUST also include `Content-ID` and
   `Content-Type` in its header. The value of `Content-ID` has the format of a
@@ -241,27 +241,27 @@ Content-Type: application/alto-propmap+json
 
 ## Multipart Endpoint Cost Service for Path Vector # {#pvecs-spec}
 
-This document introduces a new ALTO resource called multipart endpoint cost
-resource, which allows an ALTO server to provide other ALTO resources associated
-to the endpoint cost resource in the same response.
+This document introduces a new ALTO resource called multipart Endpoint Cost
+Service, which allows an ALTO server to provide other ALTO resources associated
+with the Endpoint Cost Service resource in the same response.
 
 ### Media Type ##
 
-The media type of the multipart endpoint cost resource is
+The media type of the multipart Endpoint Cost Service resource is
 `multipart/related;type=application/alto-endpointcost+json`.
 
 ### HTTP Method ##
 
-The multipart endpoint cost resource is requested using the HTTP POST method.
+The multipart Endpoint Cost Service resource is requested using the HTTP POST method.
 
 ### Accept Input Parameters ## {#pvecs-accept}
 
-The input parameters of the multipart endpoint cost resource are supplied in the
+The input parameters of the multipart Endpoint Cost Service resource are supplied in the
 body of an HTTP POST request. This document extends the input parameters to an
-endpoint cost map, which is defined as a JSON object of type ReqEndpointCost in
+Endpoint Cost Service, which is defined as a JSON object of type ReqEndpointCost in
 Section 11.5.1.3 in RFC 7285 {{RFC7285}}, with a data format indicated by the
 media type `application/alto-endpointcostparams+json`, which is a JSON object of
-type PVEndpointCostParams, where
+type PVReqEndpointCost:
 
 ~~~
 object {
@@ -302,9 +302,9 @@ Content-Type: application/alto-endpointcostparams+json
 
 ### Capabilities {#pvecs-cap}
 
-The capabilities of the multipart endpoint cost resource are defined by a JSON
-object of type PVEndpointcostCapabilities, which is defined as the same as
-PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
+The capabilities of the multipart Endpoint Cost Service resource are defined by
+a JSON object of type PVEndpointcostCapabilities, which is defined as the same
+as PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
 
 ### Uses
 
@@ -337,7 +337,7 @@ The body MUST consist of two parts:
   The body of the Path Vector part MUST be a JSON object with the same format as
   defined in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the
   `vtag` field in the `meta` field, which provides the version tag of the returned
-  endpoint cost map. The resource ID of the version tag MUST follow the format of
+  EndpointCostMapData. The resource ID of the version tag MUST follow the format of
 
   ~~~
   resource-id '.' part-resource-id

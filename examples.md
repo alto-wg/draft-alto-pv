@@ -28,7 +28,7 @@ following information resources:
 Below is the Information Resource Directory of the example ALTO server. To
 enable the extension defined in this document, the `path-vector` cost type
 ({{cost-type-spec}}) is defined in the `cost-types` of the `meta` field, and is
-included in the `cost-type-names` of resources `filetered-cost-map-pv` and
+included in the `cost-type-names` of resources `filtered-cost-map-pv` and
 `endpoint-cost-pv`.
 
 ~~~
@@ -182,12 +182,12 @@ Content-Type: application/alto-propmap+json
 }
 ~~~
 
-## Example: Multipart Endpoint Cost Resource
+## Example: Multipart Endpoint Cost Service Resource
 
 The following examples demonstrate the request to the `endpoint-cost-pv`
 resource and the corresponding response.
 
-The request uses the path vector cost type in the `cost-type` field, and
+The request uses the Path Vector cost type in the `cost-type` field, and
 queries the Maximum Reservable Bandwidth ANE property and the Persistent Entity
 property for two source and destination pairs: 192.0.2.34 -> 192.0.2.2 and
 192.0.2.34 -> 192.0.2.50.
@@ -205,7 +205,7 @@ the corresponding link capacity (10 Gbps for L1 and 15 Gbps for L2).
 
 Both NET1 and NET2 have a mobile edge deployed, i.e., MEC1 in NET1 and MEC2 in
 NET2. Assume the ANEName for MEC1 and MEC2 are `MEC1` and `MEC2` and their
-properties can be retrieved from the property map `ane-props`. Thus, the
+properties can be retrieved from the Property Map `ane-props`. Thus, the
 `persistent-entity-id` property of NET1 and NET3 are `ane-props.ane:MEC1` and
 `ane-props.ane:MEC2` respectively.
 
@@ -376,7 +376,7 @@ Content-Type: application/alto-propmap+json
 ## Example: Incremental Updates {#example-sse}
 
 In this example, an ALTO client subscribes to the incremental update for the
-multipart endpoint cost resource `endpoint-cost-pv`.
+multipart Endpoint Cost Service resource `endpoint-cost-pv`.
 
 ~~~
 POST /updates/pv HTTP/1.1

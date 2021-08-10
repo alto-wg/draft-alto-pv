@@ -31,7 +31,7 @@ network whose properties have an impact on the end-to-end performance for
 traffic between a source and a destination.
 
 When an ANE is defined by the ALTO server, it is assigned an identifier, i.e.,
-string of type ANEName as specified in {{ane-name-spec}}, and a set of
+a string of type ANEName as specified in {{ane-name-spec}}, and a set of
 associated properties.
 
 ### ANE Domain
@@ -87,8 +87,8 @@ the request body, and the response includes and only includes the selected
 properties for the ANEs in the response.
 
 The `ane-property-names` capability for Cost Map and for Endpoint Cost Service
-are specified in {{pvcm-cap}} and {{pvecs-cap}} respectively. The
-`ane-property-names` filter for Cost Map and Endpoint Cost Service are specified
+is specified in {{pvcm-cap}} and {{pvecs-cap}} respectively. The
+`ane-property-names` filter for Cost Map and Endpoint Cost Service is specified
 in {{pvcm-accept}} and {{pvecs-accept}} accordingly.
 
 ## Path Vector Cost Type {#path-vector-design}

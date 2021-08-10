@@ -284,28 +284,32 @@ underlying network(s) for informed traffic optimization among endpoints.
 
 --- back
 
-# Changes since -14
+# Revision Logs
+
+## Changes since -14
 
 Revision -15
 
 - fixes the IDNits warnings,
+- fixes grammar issues,
 - addresses the comments in the AD review.
 
-# Changes since -13
+
+## Changes since -13
 
 Revision -14
 
 - addresses the comments in the chair review,
 - fixes most issues raised by IDNits.
 
-# Changes since -12
+## Changes since -12
 
 Revision -13
 
 - changes the abstract based on the chairs' reviews
 - integrates Richard's responds to WGLC reviews
 
-# Changes since -11
+## Changes since -11
 
 Revision -12
 
@@ -314,7 +318,7 @@ Revision -12
 - restructures several paragraphs that are not clear (Sec 3, Path Vector bullet, Sec 4.2, Sec 5.1.3, Sec 6.2.4, Sec 6.4.2, Sec 9.3)
 - uses `ALTO Entity Domain Type Registry`
 
-# Changes since -10
+## Changes since -10
 
 Revision -11
 
@@ -333,7 +337,7 @@ Revision -11
 - adds the discussion on ephemeral and persistent ANEs.
 
 
-# Changes since -09
+## Changes since -09
 
 Revision -10
 
@@ -344,7 +348,7 @@ Revision -10
 - revises the overview to explain and defend the concepts and decision choices
 - fixes inconsistent terms, typos
 
-# Changes since -08
+## Changes since -08
 
 This revision
 
@@ -352,7 +356,7 @@ This revision
 - emphasizes that abstract network elements can be generated on demand in both
   introduction and motivating use cases
 
-# Changes Since Version -06 #
+## Changes Since Version -06 #
 
 - We emphasize the importance of the path vector extension in two aspects:
 
