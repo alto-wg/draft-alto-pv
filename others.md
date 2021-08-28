@@ -27,23 +27,13 @@ backward compatible with the base ALTO protocol:
 
 <!-- FIXME: path-vector cannot be used in multi-cost, also no reason -->
 
-The extension defined in this document is NOT compatible with the multi-cost
-extension {{RFC8189}}. The reason is that if a resource supports both the
-extension defined in this document and the multi-cost extension, the media type
-of this resource depends on the selection of cost types: if the Path Vector cost
-type is selected, the media type of the response is either `multipart/related;
-type=application/alto-costmap+json` or `multipart/related;
-type=application/alto-endpointcost+json`; if the Path Vector cost type is not
-selected, the media type of the response is either
-`application/alto-costmap+json` or `application/alto-endpointcost+json`. Thus,
-there can be multiple media types associated with the information resource,
-which is not compatible with {{RFC7285}} (Section 9.1.2).
-
-Note that this problem may happen when an ALTO information resource supports
-multiple cost types, even if it does not enable the multi-cost extension. Thus,
-{{pvcm-cap}} has specified that if an ALTO information resource enables the
-extension defined in this document, the Path Vector cost type MUST be the only
-cost type in the `cost-type-names` capability of this resource.
+The extension defined in this document is compatible with the multi-cost
+extension {{RFC8189}}. Such a resource has a media type of either
+`multipart/related; type=application/alto-costmap+json` or `multipart/related;
+type=application/alto-endpointcost+json`. Its `cost-constraints` field must
+either be `false` or not present and the Path Vector cost type must be present
+in the `cost-type-names` capability field but must not be present in the
+`testable-cost-type-names` field, as specified in {{pvcm-cap}} and {{pvecs-cap}}.
 
 <!--
 As [](#fcm-cap) mentions, the syntax and semantics of whether `constraints` or

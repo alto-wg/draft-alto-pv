@@ -1,0 +1,14 @@
+{
+  "multi-cost-types": [
+    { "cost-mode": "array", "cost-metric": "ane-path" },
+    { "cost-mode": "numerical", "cost-metric": "routingcost" }
+  ],
+  "endpoints": {
+    "srcs": [ "ipv4:192.0.2.34" ],
+    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.2.50" ]
+  },
+  "ane-property-names": [
+    "max-reservable-bandwidth",
+    "persistent-entity-id"
+  ]
+}

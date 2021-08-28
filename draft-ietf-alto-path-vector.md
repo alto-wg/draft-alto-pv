@@ -286,6 +286,14 @@ underlying network(s) for informed traffic optimization among endpoints.
 
 # Revision Logs
 
+## Changes since -15
+
+Revision -16
+
+- resolves the compatibility with the Multi-Cost extension (RFC 8189)
+- adds media types of defining resources for ANE property types (for IANA
+  registration)
+
 ## Changes since -14
 
 Revision -15

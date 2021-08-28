@@ -25,6 +25,9 @@ following information resources:
 - `update-pv`: An Update Stream service, which provides the incremental update
   service for the `endpoint-cost-pv` service.
 
+- `multicost-pv`: A Multipart Endpoint Cost Service with both Multi-Cost and
+  Path Vector.
+
 Below is the Information Resource Directory of the example ALTO server. To
 enable the extension defined in this document, the `path-vector` cost type
 ({{cost-type-spec}}) is defined in the `cost-types` of the `meta` field, and is
@@ -38,6 +41,10 @@ included in the `cost-type-names` of resources `filtered-cost-map-pv` and
       "path-vector": {
         "cost-mode": "array",
         "cost-metric": "ane-path"
+      },
+      "num-rc": {
+        "cost-mode": "numerical",
+        "cost-metric": "routingcost"
       }
     }
   },
@@ -88,6 +95,21 @@ included in the `cost-type-names` of resources `filtered-cost-map-pv` and
       "capabilities": {
         "support-stream-control": true
       }
+    },
+    "multicost-pv": {
+      "uri": "https://alto.exmaple.com/endpointcost/mcpv",
+      "media-type": "multipart/related;
+                     type=application/alto-endpointcost+json",
+      "accepts": "application/alto-endpointcostparams+json",
+      "capabilities": {
+        "cost-type-names": [ "path-vector", "num-rc" ],
+        "max-cost-types": 2,
+        "testable-cost-type-names": [ "num-rc" ]
+        "ane-property-names": [
+          "max-reservable-bandwidth", "persistent-entity-id"
+        ]
+      },
+      "uses": [ "ane-props" ]
     }
   }
 }
@@ -182,7 +204,7 @@ Content-Type: application/alto-propmap+json
 }
 ~~~
 
-## Example: Multipart Endpoint Cost Service Resource
+## Example: Multipart Endpoint Cost Service Resource {#example-ecspv}
 
 The following examples demonstrate the request to the `endpoint-cost-pv`
 resource and the corresponding response.
@@ -434,3 +456,104 @@ data: <Merge patch for property-map-update>
 ~~~
 
 <!-- TODO: the remaining issue is where to specify the json-merge-patch capability for each node -->
+
+## Example: Multi-cost
+
+The following examples demonstrate the request to the `multicost-pv` resource and the corresponding response.
+
+The request asks for two cost types: the first is the Path Vector cost type, and
+the second is a numerical routing cost. It also queries the Maximum Reservable
+Bandwidth ANE property and the Persistent Entity property for two source and
+destination pairs: 192.0.2.34 -> 192.0.2.2 and 192.0.2.34 -> 192.0.2.50.
+
+The response consists of two parts. The first part returns a JSONArray that
+contains two JSONValue for each requested source and destination pair: the first
+JSONValue is a JSONArray of ANENames, which is the value of the Path Vector cost
+type, and the second JSONValue is a JSONNumber which is the value of the routing
+cost. The second part is the same as in {{example-ecspv}}
+
+~~~
+POST /endpointcost/mcpv HTTP/1.1
+Host: alto.example.com
+Accept: multipart/related;
+        type=application/alto-endpointcost+json,
+        application/alto-error+json
+Content-Length: 351
+Content-Type: application/alto-endpointcostparams+json
+
+{
+  "multi-cost-types": [
+    { "cost-mode": "array", "cost-metric": "ane-path" },
+    { "cost-mode": "numerical", "cost-metric": "routingcost" }
+  ],
+  "endpoints": {
+    "srcs": [ "ipv4:192.0.2.34" ],
+    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.2.50" ]
+  },
+  "ane-property-names": [
+    "max-reservable-bandwidth",
+    "persistent-entity-id"
+  ]
+}
+~~~
+
+~~~
+HTTP/1.1 200 OK
+Content-Length: 1240
+Content-Type: multipart/related; boundary=example-2;
+              type=application/alto-endpointcost+json
+
+--example-2
+Content-ID: ecs
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "vtags": {
+      "resource-id": "endpoint-cost-pv.ecs",
+      "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+    },
+    "multi-cost-types": [
+      { "cost-mode": "array", "cost-metric": "ane-path" },
+      { "cost-mode": "numerical", "cost-metric": "routingcost" }
+    ]
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.34": {
+      "ipv4:192.0.2.2":   [[ "NET3", "AGGR1" ], 1],
+      "ipv4:192.0.2.50":   [[ "NET3", "AGGR2" ], 1]
+    }
+  }
+}
+--example-2
+Content-ID: propmap
+Content-Type: application/alto-propmap+json
+
+{
+  "meta": {
+    "dependent-vtags": [
+      {
+        "resource-id": "endpoint-cost-pv.ecs",
+        "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+      },
+      {
+        "resource-id": "ane-props",
+        "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
+      }
+    ]
+  },
+  "property-map": {
+    ".ane:AGGR1": {
+      "max-reservable-bandwidth": 10000000000,
+      "persistent-entity-id": "ane-props.ane:MEC1"
+    },
+    ".ane:AGGR2": {
+      "max-reservable-bandwidth": 15000000000,
+      "persistent-entity-id": "ane-props.ane:MEC2"
+    },
+    ".ane:NET3": {
+      "max-reservable-bandwidth": 50000000000
+    }
+  }
+}
+~~~

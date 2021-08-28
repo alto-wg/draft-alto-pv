@@ -26,7 +26,7 @@ The multipart Filtered Cost Map is requested using the HTTP POST method.
 The input parameters of the multipart Filtered Cost Map are supplied in the body
 of an HTTP POST request. This document extends the input parameters to a
 Filtered Cost Map, which is defined as a JSON object of type
-`ReqFilteredCostMap` in Section 11.3.2.3 of RFC 7285 {{RFC7285}}, with a data
+`ReqFilteredCostMap` in Section 4.1.2 of RFC 8189 {{RFC8189}}, with a data
 format indicated by the media type `application/alto-costmapfilter+json`, which
 is a JSON object of type PVReqFilteredCostMap:
 
@@ -72,7 +72,7 @@ following request.
 ### Capabilities ## {#pvcm-cap}
 
 The multipart Filtered Cost Map resource extends the capabilities defined
-in Section 11.3.2.4 of {{RFC7285}}. The capabilities are defined by a JSON
+in Section 4.1.1 of {{RFC8189}}. The capabilities are defined by a JSON
 object of type PVFilteredCostMapCapabilities:
 
 ~~~
@@ -84,7 +84,7 @@ object {
 with fields:
 
 cost-type-names:
-: The `cost-type-names` field MUST only include the Path Vector cost type,
+: The `cost-type-names` field MUST include the Path Vector cost type,
   unless explicitly documented by a future extension. This also implies that the
   Path Vector cost type MUST be defined in the `cost-types` of the Information
   Resource Directory's `meta` field.
@@ -95,9 +95,10 @@ cost-constraints:
   instructed by a future document.
 
 testable-cost-type-names:
-: If the `cost-type-names` field includes the Path Vector cost type, the Path
-  Vector cost type MUST NOT be included in the `testable-cost-type-names` field
-  unless specifically instructed by a future document.
+: If the `cost-type-names` field includes the Path Vector cost type and the
+  `testable-cost-type-names` field is present, the Path Vector cost type MUST
+  NOT be included in the `testable-cost-type-names` field unless specifically
+  instructed by a future document.
 
 ane-property-names:
 : Defines a list of ANE properties that can be returned. If the field is NOT
@@ -136,9 +137,13 @@ The body of the response MUST consist of two parts:
   The `Content-Type` MUST be `application/alto-costmap+json`.
 
   The body of the Path Vector part MUST be a JSON object with the same format as
-  defined in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the
+  defined in Section 11.2.3.6 of {{RFC7285}} when the `cost-type` field is
+  present in the input parameters and MUST be a JSON object with the same format
+  as defined in Section 4.1.3 of {{RFC8189}} if the `multi-cost-types` field is
+  present. The JSON object MUST include the
   `vtag` field in the `meta` field, which provides the version tag of the
-  returned CostMapData. The resource ID of the version tag MUST follow the format of
+  returned CostMapData. The resource ID of the version tag MUST follow the
+  format of
 
   ~~~
   resource-id '.' part-resource-id
@@ -170,7 +175,10 @@ The body of the response MUST consist of two parts:
   entity domain as defined in Section 5.1.2.3 of
   {{I-D.ietf-alto-unified-props-new}}. The EntityProps for each ANE has one
   member for each property that is both 1) associated with the ANE, and 2)
-  specified in the `ane-property-names` in the request.
+  specified in the `ane-property-names` in the request. If the Path Vector cost
+  type is not included in the `cost-type` field or the `multi-cost-type` field,
+  the `property-map` field MUST be present and the value MUST be an empty object
+  ({}).
 
 A complete and valid response MUST include both the Path Vector part and the
 Property Map part in the multipart message. If any part is NOT present, the
@@ -183,7 +191,7 @@ object. Thus, it is the element the application processes first. Even though the
 `start` parameter allows it to be placed anywhere in the part sequence, it is
 RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
 the Path Vector part is always put as the first part, followed by the Property
-Map part. When doing so, an ALTO server MAY choose to NOT set the `start`
+Map part. When doing so, an ALTO server MAY choose not to set the `start`
 parameter, which implies the first part is the root object.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
@@ -256,17 +264,17 @@ The multipart Endpoint Cost Service resource is requested using the HTTP POST me
 
 ### Accept Input Parameters ## {#pvecs-accept}
 
-The input parameters of the multipart Endpoint Cost Service resource are supplied in the
-body of an HTTP POST request. This document extends the input parameters to an
-Endpoint Cost Service, which is defined as a JSON object of type ReqEndpointCost in
-Section 11.5.1.3 in RFC 7285 {{RFC7285}}, with a data format indicated by the
-media type `application/alto-endpointcostparams+json`, which is a JSON object of
-type PVReqEndpointCost:
+The input parameters of the multipart Endpoint Cost Service resource are
+supplied in the body of an HTTP POST request. This document extends the input
+parameters to an Endpoint Cost Service, which is defined as a JSON object of
+type ReqEndpointCost in Section 4.2.2 in RFC 8189 {{RFC8189}}, with a data
+format indicated by the media type `application/alto-endpointcostparams+json`,
+which is a JSON object of type PVReqEndpointCost:
 
 ~~~
 object {
   [EntityPropertyName ane-property-names<0..*>;]
-} PVReqEndpointcost : ReqEndpointcost;
+} PVReqEndpointcost : ReqEndpointcostMap;
 ~~~
 
 with fields:
@@ -335,7 +343,10 @@ The body MUST consist of two parts:
   The `Content-Type` MUST be `application/alto-endpointcost+json`.
 
   The body of the Path Vector part MUST be a JSON object with the same format as
-  defined in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the
+  defined in Section 11.5.1.6 of {{RFC7285}} when the `cost-type` field is
+  present in the input parameters and MUST be a JSON object with the same format
+  as defined in Section 4.1.3 of {{RFC8189}} if the `multi-cost-types` field is
+  present. The JSON object MUST include the
   `vtag` field in the `meta` field, which provides the version tag of the returned
   EndpointCostMapData. The resource ID of the version tag MUST follow the format of
 
@@ -365,7 +376,10 @@ The body MUST consist of two parts:
   entity domain as defined in Section 5.1.2.3 of
   {{I-D.ietf-alto-unified-props-new}}. The EntityProps for each ANE has one
   member for each property that is both 1) associated with the ANE, and 2)
-  specified in the `ane-property-names` in the request.
+  specified in the `ane-property-names` in the request. If the Path Vector cost
+  type is not included in the `cost-type` field or the `multi-cost-type` field,
+  the `property-map` field MUST be present and the value MUST be an empty object
+  ({}).
 
 A complete and valid response MUST include both the Path Vector part and the
 Property Map part in the multipart message. If any part is NOT present, the
@@ -378,7 +392,7 @@ object. Thus, it is the element the application processes first. Even though the
 `start` parameter allows it to be placed anywhere in the part sequence, it is
 RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
 the Path Vector part is always put as the first part, followed by the Property
-Map part. When doing so, an ALTO server MAY choose to NOT set the `start`
+Map part. When doing so, an ALTO server MAY choose not to set the `start`
 parameter, which implies the first part is the root object.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example

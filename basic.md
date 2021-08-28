@@ -69,7 +69,7 @@ information resource, so their ResourceID part must be empty.
                  | |   MEC1    | |         |          |
                  | +-----------+ |   +-----+          |
           PID2   |               |   |     +----------+
-   192.0.2.16/28+-+               |   |         NET3
+  192.0.2.16/28+-+               |   |         NET3
                  |               |   | 15 Gbps
                  |               |   |        \
                  +---------------+   |         -------- L2
@@ -106,6 +106,9 @@ Security Considerations:
   providers should be made aware of the security ramifications related to the
   exposure of an entity property.
 
+Media Type of Defining Resource:
+: application/alto-propmap+json
+
 To illustrate the use of `max-reservable-bandwidth`, consider the network in
 {{fig-pe}}. An ALTO server can create an ANE for each interconnection link,
 where the initial value for `max-reservable-bandwidth` is the link capacity.
@@ -136,6 +139,9 @@ Security Considerations:
 : ALTO entity properties expose information to ALTO clients. ALTO service
   providers should be made aware of the security ramifications related to the
   exposure of an entity property.
+
+Media Type of Defining Resource:
+: application/alto-propmap+json
 
 To illustrate the use of `persistent-entity-id`, consider the network in
 {{fig-pe}}. Assume the ALTO server has a Property Map resource called
