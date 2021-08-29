@@ -61,6 +61,35 @@ In this document, two initial ANE property types are specified,
 Note that the two property types defined in this document do not depend on any
 information resource, so their ResourceID part must be empty.
 
+### Maximum Reservable Bandwidth {#maxresbw}
+
+The maximum reservable bandwidth property (`max-reservable-bandwidth`) stands
+for the maximum bandwidth that can be reserved for all the traffic that
+traverses an ANE. The value MUST be encoded as a non-negative numerical cost
+value as defined in Section 6.1.2.1 of {{RFC7285}} and the unit is bit per
+second (bps). If this property is requested but not present in an ANE, it MUST
+be interpreted as that the ANE does not support bandwidth reservation.
+
+### Persistent Entity ID {#persistent-entity-id}
+
+The persistent entity ID property is the entity identifier of the persistent
+ANE which an ephemeral ANE presents (See {{assoc}} for details). The value of
+this property is encoded with the format EntityID defined in Section 5.1.3 of
+{{I-D.ietf-alto-unified-props-new}}.
+
+In this format, the entity ID combines:
+
+- a defining information resource for the ANE on which a
+  "persistent-entity-id" is queried, which is the Property Map resource
+  defining the ANE as a persistent entity, together with the properties;
+
+- the persistent name of the ANE in that Property Map.
+
+With this format, the client has all the needed information for further
+standalone query properties on the persistent ANE.
+
+### Examples
+
 ~~~~~~~~~~ drawing
                                        ----- L1
                                       /
@@ -88,67 +117,15 @@ ANE property types. There are 3 sub-networks (NET1, NET2 and NET3) and two
 interconnection links (L1 and L2). It is assumed that each sub-network has
 sufficiently large bandwidth to be reserved.
 
-### New ANE Property Type: Maximum Reservable Bandwidth {#maxresbw}
+To illustrate the use of `max-reservable-bandwidth`, an ALTO server can create
+an ANE for each interconnection link, where the initial value for
+`max-reservable-bandwidth` is the link capacity.
 
-Identifier:
-: `max-reservable-bandwidth`
-
-Intended Semantics:
-: The maximum reservable bandwidth property stands for the maximum bandwidth
-  that can be reserved for all the traffic that traverses an ANE. The value MUST
-  be encoded as a non-negative numerical cost value as defined in Section
-  6.1.2.1 of {{RFC7285}} and the unit is bit per second. If this property is
-  requested but not present in an ANE, it MUST be interpreted as that the ANE
-  does not support bandwidth reservation.
-
-Security Considerations:
-: ALTO entity properties expose information to ALTO clients. ALTO service
-  providers should be made aware of the security ramifications related to the
-  exposure of an entity property.
-
-Media Type of Defining Resource:
-: application/alto-propmap+json
-
-To illustrate the use of `max-reservable-bandwidth`, consider the network in
-{{fig-pe}}. An ALTO server can create an ANE for each interconnection link,
-where the initial value for `max-reservable-bandwidth` is the link capacity.
-
-### New ANE Property Type: Persistent Entity ID {#persistent-entity-id}
-
-Identifier:
-: `persistent-entity-id`
-
-Intended Semantics:
-: The persistent entity ID property is the entity identifier of the persistent
-  ANE which an ephemeral ANE presents (See {{assoc}} for details). The value of
-  this property is encoded with the format defined in Section 5.1.3 of
-  {{I-D.ietf-alto-unified-props-new}}.
-
-  In this format, the entity ID combines:
-
-  - a defining information resource for the ANE on which a
-    "persistent-entity-id" is queried, which is the Property Map resource
-    defining the ANE as a persistent entity, together with the properties
-
-  - the persistent name of the ANE in that Property Map
-
-  With this format, the client has all the needed information for further
-  standalone query properties on the persistent ANE.
-
-Security Considerations:
-: ALTO entity properties expose information to ALTO clients. ALTO service
-  providers should be made aware of the security ramifications related to the
-  exposure of an entity property.
-
-Media Type of Defining Resource:
-: application/alto-propmap+json
-
-To illustrate the use of `persistent-entity-id`, consider the network in
-{{fig-pe}}. Assume the ALTO server has a Property Map resource called
-"mec-props" that defines persistent ANEs "MEC1" and "MEC2" that represent the
-corresponding mobile edge computing (MEC) clusters. Since MEC1 is associated
-with NET1, the `persistent-entity-id` of the ephemeral ANE `.ane:NET1` is the
-persistent entity id `mec-props.ane:MEC1`.
+To illustrate the use of `persistent-entity-id`, assume the ALTO server has a
+Property Map resource called "mec-props" that defines persistent ANEs "MEC1" and
+"MEC2" that represent the corresponding mobile edge computing (MEC) clusters.
+Since MEC1 is associated with NET1, the `persistent-entity-id` of the ephemeral
+ANE `.ane:NET1` is the persistent entity id `mec-props.ane:MEC1`.
 
 ## Path Vector Cost Type {#cost-type-spec}
 

@@ -281,21 +281,59 @@ Security Considerations:
 
 ## ALTO Entity Property Type Registry ##
 
-Two initial entries are registered to the ALTO Domain `ane` in the `ALTO Entity
-Property Type Registry`, as instructed by Section 12.3 of
-{{I-D.ietf-alto-unified-props-new}}. The two new entries are shown below in
-{{tbl-prop-type-reg}}.
+Two initial entries `max-reservable-bandwidth` and `persistent-entity-id` are
+registered to the ALTO Domain `ane` in the `ALTO Entity Property Type Registry`,
+as instructed by Section 12.3 of {{I-D.ietf-alto-unified-props-new}}. The two
+new entries are shown below in {{tbl-prop-type-reg}} and their details can be
+found in {{mrb-iana}} and {{pei-iana}}.
 
-| Identifier              | Intended Semantics          |
-|-------------------------|-----------------------------|
-| max-reservable-bandwidth | See {{maxresbw}}            |
-| persistent-entity-id     | See {{persistent-entity-id}} |
+| Identifier              | Intended Semantics          | Media Type of Defining Resource |
+|-------------------------|-----------------------------|---------------------------------|
+| max-reservable-bandwidth | See {{maxresbw}}            | application/alto-propmap+json |
+| persistent-entity-id     | See {{persistent-entity-id}} | application/alto-propmap+json |
 {: #tbl-prop-type-reg title="Initial Entries for ane Domain in the ALTO Entity Property Types Registry"}
+
+### New ANE Property Type: Maximum Reservable Bandwidth {#mrb-iana}
+
+Identifier:
+: `max-reservable-bandwidth`
+
+Intended Semantics:
+: See {{maxresbw}}.
+
+Media Type of Defining Resource:
+: application/alto-propmap+json
+
+Security Considerations:
+: This property is essential for applications such as large-scale data
+  transfers or overlay network interconnection to make better choice of
+  bandwidth reservation. It may reveal the bandwidth usage of the underlying
+  network and can potentially be leveraged to reduce the cost of conducting
+  denial-of-service attacks. Thus, the ALTO server MUST consider protection
+  mechanisms including only providing the information to authorized clients, and
+  information reduction and obfuscation as introduced in {{Security}}.
+
+### New ANE Property Type: Persistent Entity ID {#pei-iana}
+
+Identifier:
+: `persistent-entity-id`
+
+Intended Semantics:
+:  See {{persistent-entity-id}}.
+
+Media Type of Defining Resource:
+: application/alto-propmap+json
+
+Security Considerations:
+: This property is useful when an ALTO server wants to selectively expose
+  certain service points whose detailed properties can be further queried by
+  applications. The entity IDs may consider sensitive information about the
+  underlying network, and an ALTO server should follow the security
+  considerations in Section 11 of {{I-D.ietf-alto-unified-props-new}}.
 
 # Acknowledgments #
 
-The authors would like to thank discussions with Andreas
-Voellmy, Erran Li, Haibin Song, Haizhou Du, Jiayuan Hu, Qiao Xiang, Tianyuan Liu,
-Xiao Shi, Xin Wang, and Yan Luo. The authors thank Greg Bernstein (Grotto Networks),
-Dawn Chen (Tongji University), Wendy Roome, and Michael Scharf for
-their contributions to earlier drafts.
+The authors would like to thank discussions with Andreas Voellmy, Erran Li,
+Haibin Song, Haizhou Du, Jiayuan Hu, Qiao Xiang, Tianyuan Liu, Xiao Shi, Xin
+Wang, and Yan Luo. The authors thank Greg Bernstein, Dawn Chen, Wendy Roome, and
+Michael Scharf for their contributions to earlier drafts.

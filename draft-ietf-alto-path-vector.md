@@ -286,6 +286,12 @@ underlying network(s) for informed traffic optimization among endpoints.
 
 # Revision Logs
 
+## Changes since -16
+
+Revision -17
+
+- adds items for media type of defining resources in IANA considerations
+
 ## Changes since -15
 
 Revision -16
