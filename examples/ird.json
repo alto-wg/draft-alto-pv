@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "cost-types": {
+      "path-vector": {
+        "cost-mode": "array",
+        "cost-metric": "ane-path"
+      },
+      "num-rc": {
+        "cost-mode": "numerical",
+        "cost-metric": "routingcost"
+      }
+    }
+  },
+  "resources": {
+    "my-default-networkmap": {
+      "uri" : "https://alto.example.com/networkmap",
+      "media-type" : "application/alto-networkmap+json"
+    },
+    "filtered-cost-map-pv": {
+      "uri": "https://alto.example.com/costmap/pv",
+      "media-type": "multipart/related; type=application/alto-costmap+json",
+      "accepts": "application/alto-costmapfilter+json",
+      "capabilities": {
+        "cost-type-names": [ "path-vector" ],
+        "ane-property-names": [ "max-reservable-bandwidth" ]
+      },
+      "uses": [ "my-default-networkmap" ]
+    },
+    "ane-props": {
+      "uri": "https://alto.example.com/ane-props",
+      "media-type": "application/alto-propmap+json",
+      "accepts": "application/alto-propmapparams+json",
+      "capabilities": {
+        "mappings": {
+          ".ane": [ "cpu" ]
+        }
+      }
+    },
+    "endpoint-cost-pv": {
+      "uri": "https://alto.exmaple.com/endpointcost/pv",
+      "media-type": "multipart/related;type=application/alto-endpointcost+json",
+      "accepts": "application/alto-endpointcostparams+json",
+      "capabilities": {
+        "cost-type-names": [ "path-vector" ],
+        "ane-property-names": [
+          "max-reservable-bandwidth", "persistent-entity-id"
+        ]
+      },
+      "uses": [ "ane-props" ]
+    },
+    "update-pv": {
+      "uri": "https://alto.example.com/updates/pv",
+      "media-type": "text/event-stream",
+      "uses": [ "endpoint-cost-pv" ],
+      "accepts": "application/alto-updatestreamparams+json",
+      "capabilities": {
+        "support-stream-control": true
+      }
+    },
+    "multicost-pv": {
+      "uri": "https://alto.exmaple.com/endpointcost/mcpv",
+      "media-type": "multipart/related;type=application/alto-endpointcost+json",
+      "accepts": "application/alto-endpointcostparams+json",
+      "capabilities": {
+        "cost-type-names": [ "path-vector", "num-rc" ],
+        "max-cost-types": 2,
+        "testable-cost-type-names": [ "num-rc" ],
+        "ane-property-names": [
+          "max-reservable-bandwidth", "persistent-entity-id"
+        ]
+      },
+      "uses": [ "ane-props" ]
+    }
+  }
+}

@@ -75,6 +75,7 @@ normative:
   RFC2119:
   RFC7285:
   RFC2387:
+  RFC5322:
   RFC8174:
   RFC8189:
   RFC8895:
@@ -285,6 +286,14 @@ underlying network(s) for informed traffic optimization among endpoints.
 --- back
 
 # Revision Logs
+
+## Changes since -17
+
+Revision -18
+
+- changes the specification for content-id to conform to {{RFC2387}} and {{RFC5322}}
+- adds IPv6 examples
+
 
 ## Changes since -16
 

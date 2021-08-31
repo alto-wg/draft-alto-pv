@@ -133,8 +133,9 @@ boundary:
 The body of the response MUST consist of two parts:
 
 - The Path Vector part MUST include `Content-ID` and `Content-Type` in its
-  header. The value of `Content-ID` MUST has the format of a Part Resource ID.
-  The `Content-Type` MUST be `application/alto-costmap+json`.
+  header. The `Content-Type` MUST be `application/alto-costmap+json`.
+  The value of `Content-ID` MUST have the same format as the Part Content ID as
+  specified in {{part-rid-spec}}.
 
   The body of the Path Vector part MUST be a JSON object with the same format as
   defined in Section 11.2.3.6 of {{RFC7285}} when the `cost-type` field is
@@ -150,16 +151,17 @@ The body of the response MUST consist of two parts:
   ~~~
 
   where `resource-id` is the resource Id of the Path Vector resource, and
-  `part-resource-id` has the same value as the `Content-ID` of the Path Vector
-  part.
+  `part-resource-id` has the same value as the PART-RESOURCE-ID in the
+  `Content-ID` of the Path Vector part.
   The `meta` field MUST also include the `dependent-vtags` field, whose value is
   a single-element array to indicate the version tag of the network map used,
   where the network map is specified in the `uses` attribute of the multipart
   Filtered Cost Map resource in IRD.
 
 - The Unified Property Map part MUST also include `Content-ID` and
-  `Content-Type` in its header. The value of `Content-ID` has the format of a
-  Part Resource ID. The `Content-Type` MUST be `application/alto-propmap+json`.
+  `Content-Type` in its header. The `Content-Type` MUST be
+  `application/alto-propmap+json`. The value of `Content-ID` MUST have the same
+  format as the Part Content ID as specified in {{part-rid-spec}}.
 
   The body of the Unified Property Map part is a JSON object with the same
   format as defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The
@@ -205,7 +207,7 @@ Content-Type: multipart/related; boundary=example-1;
               type=application/alto-costmap+json
 
 --example-1
-Content-ID: costmap
+Content-ID: <costmap@alto.example.com>
 Content-Type: application/alto-costmap+json
 
 {
@@ -227,7 +229,7 @@ Content-Type: application/alto-costmap+json
   }
 }
 --example-1
-Content-ID: propmap
+Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
 {
@@ -339,8 +341,10 @@ boundary:
 The body MUST consist of two parts:
 
 - The Path Vector part MUST include `Content-ID` and `Content-Type` in its
-  header. The value of `Content-ID` MUST has the format of a Part Resource ID.
+  header.
   The `Content-Type` MUST be `application/alto-endpointcost+json`.
+  The value of `Content-ID` MUST have the same format as the Part Content ID as
+  specified in {{part-rid-spec}}.
 
   The body of the Path Vector part MUST be a JSON object with the same format as
   defined in Section 11.5.1.6 of {{RFC7285}} when the `cost-type` field is
@@ -354,13 +358,14 @@ The body MUST consist of two parts:
   resource-id '.' part-resource-id
   ~~~
   where `resource-id` is the resource Id of the Path Vector resource, and
-  `part-resource-id` has the same value as the `Content-ID` of the Path Vector
-  part.
+  `part-resource-id` has the same value as the PART-RESOURCE-ID in the `Content-ID`
+  of the Path Vector part.
 
 - The Unified Property Map part MUST also include `Content-ID` and
-  `Content-Type` in its header. The value of `Content-ID` MUST has the format
-  of a Part Resource ID. The `Content-Type` MUST be
+  `Content-Type` in its header. The `Content-Type` MUST be
   `application/alto-propmap+json`.
+  The value of `Content-ID` MUST have the same format as the Part Content ID as
+  specified in {{part-rid-spec}}.
 
   The body of the Unified Property Map part MUST be a JSON object with the same
   format as defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The
@@ -405,13 +410,13 @@ Content-Type: multipart/related; boundary=example-1;
               type=application/alto-endpointcost+json
 
 --example-1
-Content-ID: ecs
+Content-ID: <ecs@alto.example.com>
 Content-Type: application/alto-endpointcost+json
 
 {
   "meta": {
     "vtag": {
-      "resource-id": "ecs-pv.costmap",
+      "resource-id": "ecs-pv.ecs",
       "tag": "d827f484cb66ce6df6b5077cb8562b0a"
     },
     "dependent-vtags": [
@@ -427,14 +432,14 @@ Content-Type: application/alto-endpointcost+json
   }
 }
 --example-1
-Content-ID: propmap
+Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
 {
   "meta": {
     "dependent-vtags": [
       {
-        "resource-id": "ecs-pv.costmap",
+        "resource-id": "ecs-pv.ecs",
         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
       }
     ]

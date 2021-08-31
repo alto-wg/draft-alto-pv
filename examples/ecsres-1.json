@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "vtags": {
+      "resource-id": "endpoint-cost-pv.ecs",
+      "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+    },
+    "cost-type": {
+      "cost-mode": "array",
+      "cost-metric": "ane-path"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.34": {
+      "ipv4:192.0.2.2":   [ "NET3", "L1", "NET1" ],
+      "ipv4:192.0.2.50":   [ "NET3", "L2", "NET2" ]
+    },
+    "ipv6:2001:DB8:0:0:3::1": {
+      "ipv6:2001:DB8:0:0:4::1": [ "NET3", "L2", "NET2" ]
+    }
+  }
+}

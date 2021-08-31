@@ -91,24 +91,24 @@ standalone query properties on the persistent ANE.
 ### Examples
 
 ~~~~~~~~~~ drawing
-                                       ----- L1
-                                      /
-          PID1   +---------------+ 10 Gbps +----------+    PID3
-   192.0.2.0/28+-+ +-----------+ +---------+          +--+192.0.2.32/28
-                 | |   MEC1    | |         |          |
-                 | +-----------+ |   +-----+          |
-          PID2   |               |   |     +----------+
-  192.0.2.16/28+-+               |   |         NET3
-                 |               |   | 15 Gbps
-                 |               |   |        \
-                 +---------------+   |         -------- L2
-                       NET1          |
-                              +---------------+
-                              | +-----------+ |   PID4
-                              | |   MEC2    | +--+192.0.2.48/28
-                              | +-----------+ |
-                              +---------------+
-                                    NET2
+                                     ----- L1
+                                    /
+        PID1   +----------+ 10 Gbps +----------+    PID3
+ 192.0.2.0/28+-+ +------+ +---------+          +--+192.0.2.32/28
+               | | MEC1 | |         |          |   2001:DB8::3:0/16
+               | +------+ |   +-----+          |
+        PID2   |          |   |     +----------+
+192.0.2.16/28+-+          |   |         NET3
+               |          |   | 15 Gbps
+               |          |   |        \
+               +----------+   |         -------- L2
+                   NET1       |
+                            +----------+
+                            | +------+ |   PID4
+                            | | MEC2 | +--+192.0.2.48/28
+                            | +------+ |   2001:DB8::4:0/16
+                            +----------+
+                                NET2
 ~~~~~~~~~~
 {: #fig-pe artwork-align="center" title="Examples of ANE Properties"}
 
@@ -154,7 +154,7 @@ JSONValue. However, an ALTO server that enables this extension MUST return a
 JSON array of ANEName ({{ane-name-spec}}) when the cost metric is
 "ane-path".
 
-## Part Resource ID {#part-rid-spec}
+## Part Resource ID and Part Content ID {#part-rid-spec}
 
 A Part Resource ID is encoded as a JSON string with the same format as that of the
 type ResourceID (Section 10.2 of {{RFC7285}}).
@@ -165,3 +165,16 @@ concatenation (see {{ref-partmsg-design}}) MUST also conform to the same length
 constraint. The same requirement applies to the resource ID of the Path Vector
 resource, too. Thus, it is RECOMMENDED to limit the length of resource ID and
 client ID related to a Path Vector resource to 31 characters.
+
+A Part Content ID conforms to the format of msg-id as specified in
+{{RFC2387}} and {{RFC5322}}. Specifically, it has the following format:
+
+  "<" PART-RESOURCE-ID "@" DOMAIN-NAME ">"
+
+PART-RESOURCE-ID:
+: PART-RESOURCE-ID has the same format as the Part Resource ID. It is used to
+  identify whether a part message is a Path Vector or a Property Map.
+
+DOMAIN-NAME:
+: DOMAIN-NAME has the same format as dot-atom-text specified in Section 3.2.3 of
+  {{RFC5322}}. It must be the domain name of the ALTO server.

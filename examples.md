@@ -104,7 +104,7 @@ included in the `cost-type-names` of resources `filtered-cost-map-pv` and
       "capabilities": {
         "cost-type-names": [ "path-vector", "num-rc" ],
         "max-cost-types": 2,
-        "testable-cost-type-names": [ "num-rc" ]
+        "testable-cost-type-names": [ "num-rc" ],
         "ane-property-names": [
           "max-reservable-bandwidth", "persistent-entity-id"
         ]
@@ -154,12 +154,12 @@ Content-Type: application/alto-costmapfilter+json
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: 818
+Content-Length: 860
 Content-Type: multipart/related; boundary=example-1;
               type=application/alto-costmap+json
 
 --example-1
-Content-ID: costmap
+Content-ID: <costmap@alto.example.com>
 Content-Type: application/alto-costmap+json
 
 {
@@ -187,7 +187,7 @@ Content-Type: application/alto-costmap+json
   }
 }
 --example-1
-Content-ID: propmap
+Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
 {
@@ -211,13 +211,14 @@ resource and the corresponding response.
 
 The request uses the Path Vector cost type in the `cost-type` field, and
 queries the Maximum Reservable Bandwidth ANE property and the Persistent Entity
-property for two source and destination pairs: 192.0.2.34 -> 192.0.2.2 and
-192.0.2.34 -> 192.0.2.50.
+property for two IPv4 source and destination pairs (192.0.2.34 -> 192.0.2.2 and
+192.0.2.34 -> 192.0.2.50) and one IPv6 source and destination pair
+(2001:DB8::3:1 -> 2001:DB8::4:1).
 
 The response consists of two parts. The first part returns the array of ANEName
 for each valid source and destination pair. As one can see in {{fig-pe}}, flow
-192.0.2.34 -> 192.0.2.2 traverses NET2, L1 and NET1, and flow 192.0.2.34 ->
-192.0.2.50 traverses NET2, L2 and NET3.
+192.0.2.34 -> 192.0.2.2 traverses NET2, L1 and NET1, and flows 192.0.2.34 ->
+192.0.2.50 and 2001:DB8::3:1 -> 2001:DB8::4:1 traverse NET2, L2 and NET3.
 
 The second part returns the requested properties of ANEs. Assume NET1, NET2 and NET3 has
 sufficient bandwidth and their `max-reservable-bandwidth` values are set to a sufficiently
@@ -237,7 +238,7 @@ Host: alto.example.com
 Accept: multipart/related;
         type=application/alto-endpointcost+json,
         application/alto-error+json
-Content-Length: 278
+Content-Length: 362
 Content-Type: application/alto-endpointcostparams+json
 
 {
@@ -246,8 +247,15 @@ Content-Type: application/alto-endpointcostparams+json
     "cost-metric": "ane-path"
   },
   "endpoints": {
-    "srcs": [ "ipv4:192.0.2.34" ],
-    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.2.50" ]
+    "srcs": [
+      "ipv4:192.0.2.34",
+      "ipv6:2001:DB8::3:1"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.2",
+      "ipv4:192.0.2.50",
+      "ipv6:2001:DB8::4:1"
+    ]
   },
   "ane-property-names": [
     "max-reservable-bandwidth",
@@ -258,12 +266,12 @@ Content-Type: application/alto-endpointcostparams+json
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: 1305
+Content-Length: 1433
 Content-Type: multipart/related; boundary=example-2;
               type=application/alto-endpointcost+json
 
 --example-2
-Content-ID: ecs
+Content-ID: <ecs@alto.example.com>
 Content-Type: application/alto-endpointcost+json
 
 {
@@ -281,11 +289,14 @@ Content-Type: application/alto-endpointcost+json
     "ipv4:192.0.2.34": {
       "ipv4:192.0.2.2":   [ "NET3", "L1", "NET1" ],
       "ipv4:192.0.2.50":   [ "NET3", "L2", "NET2" ]
+    },
+    "ipv6:2001:DB8::3:1": {
+      "ipv6:2001:DB8::4:1": [ "NET3", "L2", "NET2" ]
     }
   }
 }
 --example-2
-Content-ID: propmap
+Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
 {
@@ -336,12 +347,12 @@ document, and developers may refer to {{Security}} for further references.
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: 1157
+Content-Length: 1280
 Content-Type: multipart/related; boundary=example-2;
               type=application/alto-endpointcost+json
 
 --example-2
-Content-ID: ecs
+Content-ID: <ecs@alto.example.com>
 Content-Type: application/alto-endpointcost+json
 
 {
@@ -359,11 +370,14 @@ Content-Type: application/alto-endpointcost+json
     "ipv4:192.0.2.34": {
       "ipv4:192.0.2.2":   [ "NET3", "AGGR1" ],
       "ipv4:192.0.2.50":   [ "NET3", "AGGR2" ]
+    },
+    "ipv6:2001:DB8::3:1": {
+      "ipv6:2001:DB8::4:1": [ "NET3", "AGGR2" ]
     }
   }
 }
 --example-2
-Content-ID: propmap
+Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
 {
@@ -432,12 +446,12 @@ data: {"control-uri": "https://alto.example.com/updates/streams/123"}
 event: multipart/related;boundary=example-3;
        type=application/alto-endpointcost+json,ecspvsub1
 data: --example-3
-data: Content-ID: ecsmap
+data: Content-ID: <ecsmap@alto.example.com>
 data: Content-Type: application/alto-endpointcost+json
 data:
 data: <endpoint-cost-map-entry>
 data: --example-3
-data: Content-ID: propmap
+data: Content-ID: <propmap@alto.example.com>
 data: Content-Type: application/alto-propmap+json
 data:
 data: <property-map-entry>
@@ -463,8 +477,9 @@ The following examples demonstrate the request to the `multicost-pv` resource an
 
 The request asks for two cost types: the first is the Path Vector cost type, and
 the second is a numerical routing cost. It also queries the Maximum Reservable
-Bandwidth ANE property and the Persistent Entity property for two source and
-destination pairs: 192.0.2.34 -> 192.0.2.2 and 192.0.2.34 -> 192.0.2.50.
+Bandwidth ANE property and the Persistent Entity property for two IPv4 source and
+destination pairs (192.0.2.34 -> 192.0.2.2 and 192.0.2.34 -> 192.0.2.50) and one
+IPv6 source and destination pair (2001:DB8::3:1 -> 2001:DB8::4:1).
 
 The response consists of two parts. The first part returns a JSONArray that
 contains two JSONValue for each requested source and destination pair: the first
@@ -478,7 +493,7 @@ Host: alto.example.com
 Accept: multipart/related;
         type=application/alto-endpointcost+json,
         application/alto-error+json
-Content-Length: 351
+Content-Length: 433
 Content-Type: application/alto-endpointcostparams+json
 
 {
@@ -487,8 +502,15 @@ Content-Type: application/alto-endpointcostparams+json
     { "cost-mode": "numerical", "cost-metric": "routingcost" }
   ],
   "endpoints": {
-    "srcs": [ "ipv4:192.0.2.34" ],
-    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.2.50" ]
+    "srcs": [
+      "ipv4:192.0.2.34",
+      "ipv6:2001:DB8::3:1"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.2",
+      "ipv4:192.0.2.50",
+      "ipv6:2001:DB8::4:1"
+    ]
   },
   "ane-property-names": [
     "max-reservable-bandwidth",
@@ -499,12 +521,12 @@ Content-Type: application/alto-endpointcostparams+json
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: 1240
-Content-Type: multipart/related; boundary=example-2;
+Content-Length: 1366
+Content-Type: multipart/related; boundary=example-4;
               type=application/alto-endpointcost+json
 
---example-2
-Content-ID: ecs
+--example-4
+Content-ID: <ecs@alto.example.com>
 Content-Type: application/alto-endpointcost+json
 
 {
@@ -522,11 +544,14 @@ Content-Type: application/alto-endpointcost+json
     "ipv4:192.0.2.34": {
       "ipv4:192.0.2.2":   [[ "NET3", "AGGR1" ], 1],
       "ipv4:192.0.2.50":   [[ "NET3", "AGGR2" ], 1]
+    },
+    "ipv6:2001:DB8::3:1": {
+      "ipv6:2001:DB8::4:1": [[ "NET3", "AGGR2" ], 1]
     }
   }
 }
---example-2
-Content-ID: propmap
+--example-4
+Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
 {

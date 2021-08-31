@@ -1,4 +1,4 @@
---example-4
+--example-2
 Content-ID: <ecs@alto.example.com>
 Content-Type: application/alto-endpointcost+json
 
@@ -8,22 +8,22 @@ Content-Type: application/alto-endpointcost+json
       "resource-id": "endpoint-cost-pv.ecs",
       "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
     },
-    "multi-cost-types": [
-      { "cost-mode": "array", "cost-metric": "ane-path" },
-      { "cost-mode": "numerical", "cost-metric": "routingcost" }
-    ]
+    "cost-type": {
+      "cost-mode": "array",
+      "cost-metric": "ane-path"
+    }
   },
   "endpoint-cost-map": {
     "ipv4:192.0.2.34": {
-      "ipv4:192.0.2.2":   [[ "NET3", "AGGR1" ], 1],
-      "ipv4:192.0.2.50":   [[ "NET3", "AGGR2" ], 1]
+      "ipv4:192.0.2.2":   [ "NET3", "AGGR1" ],
+      "ipv4:192.0.2.50":   [ "NET3", "AGGR2" ]
     },
     "ipv6:2001:DB8::3:1": {
-      "ipv6:2001:DB8::4:1": [[ "NET3", "AGGR2" ], 1]
+      "ipv6:2001:DB8::4:1": [ "NET3", "AGGR2" ]
     }
   }
 }
---example-4
+--example-2
 Content-ID: <propmap@alto.example.com>
 Content-Type: application/alto-propmap+json
 
