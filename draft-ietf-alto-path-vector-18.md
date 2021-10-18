@@ -1,5 +1,5 @@
 ---
-docname: draft-ietf-alto-path-vector-latest
+docname: draft-ietf-alto-path-vector-18
 title: "ALTO Extension: Path Vector"
 abbrev: ALTO-PV
 category: std
@@ -87,6 +87,7 @@ informative:
   RFC7540:
   I-D.ietf-quic-http:
   I-D.ietf-alto-performance-metrics:
+  I-D.ietf-dmm-5g-uplane-analysis:
   I-D.contreras-alto-service-edge:
   I-D.yang-alto-deliver-functions-over-networks:
   I-D.huang-alto-mowie-for-network-aware-app:
@@ -247,6 +248,11 @@ informative:
   SENSE:
     title: "Services - SENSE"
     target: http://sense.es.net/services
+    date: 2019
+
+  LHC:
+    title: "CERN - LHC"
+    target: https://atlas.cern/tags/lhc
     date: 2019
 
   HUG:

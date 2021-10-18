@@ -30,6 +30,25 @@ network-agnostic way to specify a component or an aggregation of components of a
 network whose properties have an impact on the end-to-end performance for
 traffic between a source and a destination.
 
+Abstract network elements allow ALTO servers to focus on common properties of
+different types of network components. For example, the throughput of a flow can
+be constrained by different components in a network: the capacity of a physical
+link, the maximum throughput of a firewall, the reserved bandwidth of an MPLS
+tunnel, etc. See the example below, assume the throughput of the firewall is 100
+Mbps and the capacity for link (A, B) is also 100 Mbps, they result in the same
+constraint on the total throughput of f1 and f2. Thus, they are identical when
+treated as an ANE.
+
+~~~
+   f1 |      ^                  f1
+      |      |                 ----------------->
+    +----------+                +---+     +---+
+    | Firewall |                | A |-----| B |
+    +----------+                +---+     +---+
+      |      |                 ----------------->
+      v      | f2               f2
+~~~
+
 When an ANE is defined by the ALTO server, it is assigned an identifier, i.e.,
 a string of type ANEName as specified in {{ane-name-spec}}, and a set of
 associated properties.
@@ -47,11 +66,11 @@ domain.
 
 ### Ephemeral ANE and Persistent ANE {#assoc}
 
-By design, ANEs are ephemeral and not to be used in further requests. More
-precisely, the corresponding ANE names are no longer valid beyond the scope of
-the Path Vector response or the incremental update stream for a Path Vector
-request. This has several benefits including better privacy of the ISPs and more
-flexible ANE computation.
+By design, ANEs are ephemeral and not to be used in further requests to other
+ALTO resources. More precisely, the corresponding ANE names are no longer valid
+beyond the scope of the Path Vector response or the incremental update stream
+for a Path Vector request. This has several benefits including better privacy of
+the ISPs and more flexible ANE computation.
 
 For example, an ALTO server may define an ANE for each aggregated bottleneck
 link between the sources and destinations specified in the request. For requests

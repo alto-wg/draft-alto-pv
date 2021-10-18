@@ -3,6 +3,35 @@
 This section lists some examples of Path Vector queries and the corresponding
 responses. Some long lines are truncated for better readability.
 
+## Example: Setup
+
+~~~~~~~~~~ drawing
+                                     ----- L1
+                                    /
+        PID1   +----------+ 10 Gbps +----------+    PID3
+ 192.0.2.0/28+-+ +------+ +---------+          +--+192.0.2.32/28
+               | | MEC1 | |         |          |   2001:DB8::3:0/16
+               | +------+ |   +-----+          |
+        PID2   |          |   |     +----------+
+192.0.2.16/28+-+          |   |         NET3
+               |          |   | 15 Gbps
+               |          |   |        \
+               +----------+   |         -------- L2
+                   NET1       |
+                            +----------+
+                            | +------+ |   PID4
+                            | | MEC2 | +--+192.0.2.48/28
+                            | +------+ |   2001:DB8::4:0/16
+                            +----------+
+                                NET2
+~~~~~~~~~~
+{: #fig-pe artwork-align="center" title="Examples of ANE Properties"}
+
+In this document, {{fig-pe}} is used to illustrate the message contents. There
+are 3 sub-networks (NET1, NET2 and NET3) and two interconnection links (L1 and
+L2). It is assumed that each sub-network has sufficiently large bandwidth to be
+reserved.
+
 ## Example: Information Resource Directory {#example-ird}
 
 To give a comprehensive example of the extension defined in this document, we

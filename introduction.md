@@ -302,43 +302,243 @@ additional requirements, the extension defined in this document can be applied
 to a wide range of applications. This section highlights some real use cases
 that are reported.
 
-### Large-scale Data Analytics
+### Exposing Network Bottlenecks
 
-One potential use case of the extension defined in this document is for
-large-scale data analytics such as {{SENSE}} and {{LHC}}, where data of
-gigabytes, terabytes and even petabytes are transferred. For these applications,
-the QoE is usually measured as the job completion time, which is related to the
-completion time of all the data transfers belonging to the job. With the
-extension defined in this document, an ALTO client can identify bottlenecks
-inside the network. Therefore, the overlay application can make optimal traffic
-distribution or resource reservation (i.e., proportional to the size of the
-transferred data), leading to optimal job completion time and network resource
-utilization.
+An important use case of the Path Vector extension is to expose network
+bottlenecks. Applications such as large-scale data analytics can benefit from
+being aware of the resource constraints exposed by this extension even if they
+may have different objectives.
 
-### Context-aware Data Transfer
+{{fig-da}} illustrates an example of using ALTO Path Vector as a standard
+interface between the job optimizer for a data analytics system and the network
+manager. In particular, we assume the objective of the job optimizer is to
+minimize the job completion time.
 
-It is important to know the capabilities of various ANEs between two end
-hosts, especially in the mobile environment. With the extension defined in this
-document, an ALTO client may query the "network context" information, i.e.,
-whether the two hosts are connected to the access network through a wireless
-link or a wire, and the capabilities of the access network. Thus, the client may
-use different data transfer mechanisms, or even deploy different 5G User Plane
-Functions (UPF) {{I-D.ietf-dmm-5g-uplane-analysis}} to optimize the data
-transfer.
+In this setting, the network-aware job optimizer (e.g., {{CLARINET}}) takes a
+query and generates multiple query execution plans (QEB). It can encode the QEBs
+as Path Vector requests and send to the ALTO server. The ALTO server obtains the
+routing information for the flows in a QEP and finds links, routers or
+middleboxes (e.g., a stateful firewall) that can potentially become bottlenecks
+of the QEP (see {{TON2019}} and {{G2}} for mechanisms to identify bottleneck
+links under different settings). The resource constraint information is encoded
+in a Path Vector response and returned to the ALTO client.
 
-### CDN and Service Edge
+With the network resource constraints, the job optimizer may choose the QEP with
+the optimal job completion time to be executed. It must be noted the ALTO
+framework itself does not offer the capability to control the traffic. However,
+certain network managers may offer ways to enforce resource guarantees, such as
+on-demand tunnels ({{SWAN}}), demand vector ({{HUG}}, {{UNICORN}}), etc.
+The traffic control interfaces and mechanisms are out of the scope of
+this document.
+
+~~~
+                                  Data schema      Queries
+                                       |             |
+                                       \             /
+    +-------------+                   +-----------------+
+    | ALTO Client | <===============> |  Job Optimizer  |
+    +-------------+                   +-----------------+
+PV       |   ^ PV                                    !
+Request  |   | Response                              !
+         |   |                                       !
+(Data    |   | (Network           On-demand resource !
+Transfer |   | Resource           allocation, demand !
+Intents) |   | Constraints)       vector, etc.       !
+         v   |                                       v
+    +-------------+                   +-----------------+
+    | ALTO Server | <===============> | Network Manager |
+    +-------------+                   +-----------------+
+                                        /      |      \
+                                        |      |      |
+                                       WAN    DC1    DC2
+~~~
+{: #fig-da title="Example Use Case for Data Analytics"}
+
+Another example is as illustrated in {{fig-dts}}. Consider a network consisting
+of multiple sites and a non-blocking core network, i.e., the links in the core
+network have sufficient bandwidth that they will not become the bottleneck of
+the data transfers, as similar to the case of scientific networks.
+
+~~~
+               On-going transfers   New transfer requests
+                             \----\        |
+                                  |        |
+                                  v        v
+   +-------------+               +---------------+
+   | ALTO Client | <===========> | Data Transfer |
+   +-------------+               |   Scheduler   |
+     ^ |      ^ | PV request     +---------------+
+     | |      | \--------------\
+     | |      \--------------\ |
+     | v       PV response   | v
+   +-------------+          +-------------+
+   | ALTO Server |          | ALTO Server |
+   +-------------+          +-------------+
+         ||                       ||
+     +---------+              +---------+
+     | Network |              | Network |
+     | Manager |              | Manager |
+     +---------+              +---------+
+      .                           .
+     .             _~_  __         . . .
+    .             (   )(  )             .___
+  ~v~v~       /--(         )------------(   )
+ (     )-----/    (       )            (     )
+  ~w~w~            ~^~^~^~              ~v~v~
+ Site 1        Non-blocking Core        Site 2
+~~~
+{: #fig-dts title="Example Use Case for Cross-site Bottleneck Discovery"}
+
+~~~
+Site 1:
+
+c                                         d
+........................................>
+  +---+ 10 Gbps +---+ 10 Gbps +----+ 50 Gbps
+  | A |---------| B |---------| GW |--------- Core
+  +---+         +---+         +----+
+...................
+.                 . f1
+.                 v
+a                 b
+
+Site 2:
+
+d <........................................ c
+  +---+ 5 Gbps +---+ 10 Gbps +----+ 20 Gbps
+  | X |--------| Y |---------| GW |--------- Core
+  +---+        +---+         +----+
+             ....................
+             .                  .
+             .                  V
+             e                  f
+~~~
+{: #fig-sbot title="Example: Three Flows in Two Sites"}
+
+
+With the Path Vector extension, a site can reveal the bottlenecks inside its own
+network with necessary information (such as link capacities) to the ALTO client,
+instead of providing the full topology and routing information. The bottleneck
+information can be used to analyze the impact of adding/removing data transfer
+flows, e.g., using the {{G2}} framework. For example, assume hosts a, b, c are
+in site 1 hosts d, e, f are in site 2, and there are 3 flows in two sites: a ->
+b, c -> d, e -> f. For these flows, site 1 returns
+
+~~~
+a: { b: [ane1] },
+c: { d: [ane1, ane2, ane3] }
+
+ane1: bw = 10 Gbps (link: A->B)
+ane2: bw = 10 Gbps (link: B->GW)
+ane3: bw = 50 Gbps (link: GW->Core)
+~~~
+
+and site 2 returns
+
+~~~
+c: { d: [anei, aneii, aneiii] }
+e: { f: [aneiv] }
+
+anei: bw = 5 Gbps (link Y->X)
+aneii: bw = 10 Gbps (link GW->Y)
+aneiii: bw = 20 Gbps (link Core->GW)
+aneiv: bw = 10 Gbps (link Y->GW)
+~~~
+
+With the information, the data transfer scheduler can use algorithms such as the
+theory on bottleneck structure {{G2}} to predict the potential throughput of the
+flows.
+
+### Resource Exposure for CDN and Service Edge
 
 A growing trend in today's applications is to bring storage and computation
 closer to the end users for better QoE, such as Content Delivery Network (CDN),
 AR/VR, and cloud gaming, as reported in various documents
 ({{I-D.contreras-alto-service-edge}},
 {{I-D.huang-alto-mowie-for-network-aware-app}}, and
-{{I-D.yang-alto-deliver-functions-over-networks}}).
+{{I-D.yang-alto-deliver-functions-over-networks}}). Internet Service Providers
+may deploy multiple layers of CDN caches, or more generally service edges,
+with different latency and available resources.
 
-With the extension defined in this document, an ALTO server can selectively reveal the CDNs
-and service edges that reside along the paths between different end hosts,
-together with their properties such as capabilities (e.g., storage, GPU) and
-available Service Level Agreement (SLA) plans. Thus, an ALTO client may leverage
-the information to better conduct CDN request routing or offload functionalities
-from the user equipment to the service edge, with considerations on different
-resource constraints.
+For example, the figure below illustrates a typical edge-cloud scenario. The
+"on-premise" edge nodes are closest to the end hosts and have the smallest
+latency, and the site-radio edge node and access central office (CO) have larger
+latency but more available resources.
+
+~~~
+      +-------------+              +----------------------+
+      | ALTO Client | <==========> | Application Provider |
+      +-------------+              +----------------------+
+PV         |   ^ PV                      |
+Request    |   | Response                | Resource allocation,
+           |   |                         | service establishment,
+(End hosts |   | (Edge nodes             | etc.
+and cloud  |   | and metrics)            |
+servers)   |   |                         |
+           v   |                         v
+      +-------------+             +---------------------+
+      | ALTO Server | <=========> | Cloud-Edge Provider |
+      +-------------+             +---------------------+
+       ____________________________________/\___________
+      /                                                 \
+      |           (((o                                  |
+                     |
+                    /_\             _~_            __   __
+  a               (/\_/\)          (   )          (  )~(  )_
+   \      /------(      )---------(     )----\\---(          )
+   _|_   /        (______)         (___)          (          )
+   |_| -/         Site-radio     Access CO       (__________)
+  /---\          Edge Node 1         |             Cloud DC
+On premise                           |
+                           /---------/
+           (((o           /
+              |          /
+ Site-radio  /_\        /
+Edge Node 2(/\_/\)-----/
+          /(_____)\
+   ___   /         \   ---
+b--|_| -/           \--|_|--c
+  /---\               /---\
+On premise          On premise
+~~~
+{: #fig-se title="Example Use Case for Service Edge Exposure"}
+
+~~~
+a: { b: [ane1, ane2, ane3, ane4, ane5],
+     c: [ane1, ane2, ane3, ane4, ane6],
+     DC: [ane1, ane2, ane3] }
+b: { c: [ane5, ane4, ane6], DC: [ane5, ane4, ane3] }
+
+ane1: latency=5ms cpu=2 memory=8G storage=10T
+(on premise, a)
+
+ane2: latency=20ms cpu=4 memory=8G storage=10T
+(Site-radio Edge Node 1)
+
+ane3: latency=100ms cpu=8 memory=128G storage=100T
+(Access CO)
+
+ane4: latency=20ms cpu=4 memory=8G storage=10T
+(Site-radio Edge Node 2)
+
+ane5: latency=5ms cpu=2 memory=8G storage=10T
+(on premise, b)
+
+ane6: latency=5ms cpu=2 memory=8G storage=10T
+(on premise, c)
+~~~
+{: #fig-se-example title="Example Service Edge Query Results"}
+
+With the extension defined in this document, an ALTO server can selectively
+reveal the CDNs and service edges that reside along the paths between different
+end hosts and/or the cloud servers, together with their properties such as
+capabilities (e.g., storage, GPU) and available Service Level Agreement (SLA)
+plans. See {{fig-se-example}} for an example where the query is made for sources
+[a, b] and destinations [b, c, DC]. Here each ANE represents a service edge and
+the properties include access latency, available resources, etc. Note the
+properties here are only used for illustration purposes and are not part of this
+extension.
+
+With the service edge information, an ALTO client may better conduct CDN request
+routing or offload functionalities from the user equipment to the service edge,
+with considerations on customized quality of experience.

@@ -13,6 +13,12 @@ format.
 The ANE domain associates property values with the Abstract Network Elements in
 a Property Map. Accordingly, the ANE domain always depends on a Property Map.
 
+It must be noted that the term `domain` here does not refer to a network domain.
+Rather, it is inherited from the "entity domain" defined in Sec 3.2 in
+{{I-D.ietf-alto-unified-props-new}} that represents the set of valid entities
+defined by an ALTO information resource (called the defining information
+resource).
+
 ### Entity Domain Type ## {#domain-type}
 
 ane
@@ -70,6 +76,16 @@ value as defined in Section 6.1.2.1 of {{RFC7285}} and the unit is bit per
 second (bps). If this property is requested but not present in an ANE, it MUST
 be interpreted as that the ANE does not support bandwidth reservation.
 
+It must be noted that the client must not assume that the ALTO server has the
+capability to modify the routing. In fact, for most cases, the network only
+exposes information about the path and does not provide any control capability
+inside the network. For certain use cases the network may provide certain levels
+of control capability, for example, if a network allows clients to reserve
+bandwidth for end-to-end communication, it may configure an ALTO server to
+provide the `max-reservable-bandwidth` property. However, ALTO only carries the
+information and how to use the information depends on common knowledge or a
+higher-layer protocol.
+
 ### Persistent Entity ID {#persistent-entity-id}
 
 The persistent entity ID property is the entity identifier of the persistent
@@ -90,42 +106,38 @@ standalone query properties on the persistent ANE.
 
 ### Examples
 
-~~~~~~~~~~ drawing
-                                     ----- L1
-                                    /
-        PID1   +----------+ 10 Gbps +----------+    PID3
- 192.0.2.0/28+-+ +------+ +---------+          +--+192.0.2.32/28
-               | | MEC1 | |         |          |   2001:DB8::3:0/16
-               | +------+ |   +-----+          |
-        PID2   |          |   |     +----------+
-192.0.2.16/28+-+          |   |         NET3
-               |          |   | 15 Gbps
-               |          |   |        \
-               +----------+   |         -------- L2
-                   NET1       |
-                            +----------+
-                            | +------+ |   PID4
-                            | | MEC2 | +--+192.0.2.48/28
-                            | +------+ |   2001:DB8::4:0/16
-                            +----------+
-                                NET2
-~~~~~~~~~~
-{: #fig-pe artwork-align="center" title="Examples of ANE Properties"}
+To illustrate the use of `max-reservable-bandwidth`, consider the following
+network with 5 nodes. Assume the client wants to query the maximum reservable
+bandwidth from H1 to H2. An ALTO server may split the network into two ANEs:
+`ane1` that represents the subnetwork with routers A, B, and C, and `ane2` that
+represents the subnetwork with routers B, D and E. The maximum reservable
+bandwidth for `ane1` is 15 Mbps (using path A->C->B) and the maximum reservable
+bandwidth for `ane2` is 20 Mbps (using path B->D->E).
 
-In this document, {{fig-pe}} is used to illustrate the use of the two initial
-ANE property types. There are 3 sub-networks (NET1, NET2 and NET3) and two
-interconnection links (L1 and L2). It is assumed that each sub-network has
-sufficiently large bandwidth to be reserved.
+~~~
+                     20 Mbps  20 Mbps
+          10 Mbps +---+   +---+    +---+
+             /----| B |---| D |----| E |---- H2
+       +---+/     +---+   +---+    +---+
+H1 ----| A | 15 Mbps|
+       +---+\     +---+
+             \----| C |
+          15 Mbps +---+
+~~~
 
-To illustrate the use of `max-reservable-bandwidth`, an ALTO server can create
-an ANE for each interconnection link, where the initial value for
-`max-reservable-bandwidth` is the link capacity.
+To illustrate the use of `persistent-entity-id`, consider the scenario in
+{{fig-se}}. As the life cycle of service edges are typically long, they may
+contain information that is not specific to the query. Such information can be
+stored in an individual unified property map and later be accessed by an ALTO
+client.
 
-To illustrate the use of `persistent-entity-id`, assume the ALTO server has a
-Property Map resource called "mec-props" that defines persistent ANEs "MEC1" and
-"MEC2" that represent the corresponding mobile edge computing (MEC) clusters.
-Since MEC1 is associated with NET1, the `persistent-entity-id` of the ephemeral
-ANE `.ane:NET1` is the persistent entity id `mec-props.ane:MEC1`.
+For example, `ane1` in {{fig-se-example}} represents the on-premise service edge
+closest to host `a`. Assume the properties of the service edges are provided in
+a unified property map called `se-props` and the ID of the on-premise service
+edge is `9a0b55f7-7442-4d56-8a2c-b4cc6a8e3aa1`, the `persistent-entity-id` of
+`ane1` will be `se-props.ane:9a0b55f7-7442-4d56-8a2c-b4cc6a8e3aa1`. With this
+persistent entity ID, an ALTO client may send queries to the `se-props` resource
+with the entity ID `.ane:9a0b55f7-7442-4d56-8a2c-b4cc6a8e3aa1`.
 
 ## Path Vector Cost Type {#cost-type-spec}
 
